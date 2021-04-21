@@ -78,7 +78,6 @@ const Movie = (props) => {
                   to={`/movies/edit/${movie.id}`}
                   className="m-2 btn btn-success"
                 >
-                  {' '}
                   Edit
                 </Link>
                 <span className="delete">
