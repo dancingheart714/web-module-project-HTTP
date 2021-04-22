@@ -7,6 +7,7 @@ import axios from 'axios';
 const AddMovieForm = (props) => {
   const { push } = useHistory();
   const { id } = useParams();
+  const { setMovies } = props;
 
   const [movie, setMovie] = useState({
     title: '',
@@ -26,12 +27,14 @@ const AddMovieForm = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post(`http://localhost:5000/api/movies,`, movie)
+      .post(`http://localhost:5000/api/movies`, movie)
       .then((res) => {
-        props.setMovies(res.data);
+        console.log('Hello');
+        setMovies(res.data);
         push(`/movies`);
       })
       .catch((err) => {
+        console.log(movie);
         console.log(err);
       });
   };

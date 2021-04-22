@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams, useHistory } from 'react-router-dom';
+import FavoriteMovieList from './FavoriteMovieList';
 
 import axios from 'axios';
+import e from 'cors';
 
 const Movie = (props) => {
-  const { addToFavorites } = props;
+  const { addToFavorites, deleteMovie } = props;
 
   const [movie, setMovie] = useState('');
 
@@ -22,11 +24,12 @@ const Movie = (props) => {
       });
   }, [id]);
 
-  const handleDelete = () => {
+  const handleDelete = (e) => {
+    e.preventDefault();
     axios
       .delete(`http://localhost:5000/api/movies/${id}`)
       .then((res) => {
-        props.deleteMovie(res.data);
+        deleteMovie(res.data);
         push(`/movies`);
       })
       .catch((err) => {
@@ -34,6 +37,9 @@ const Movie = (props) => {
       });
   };
 
+  const savedMovie = () => {
+    addToFavorites(movie);
+  };
   return (
     <div className="modal-page col">
       <div className="modal-dialog">
@@ -73,7 +79,9 @@ const Movie = (props) => {
               </section>
 
               <section>
-                <span className="m-2 btn btn-dark">Favorite</span>
+                <span onClick={savedMovie} className="m-2 btn btn-dark">
+                  Favorite
+                </span>
                 <Link
                   to={`/movies/edit/${movie.id}`}
                   className="m-2 btn btn-success"
@@ -82,10 +90,10 @@ const Movie = (props) => {
                 </Link>
                 <span className="delete">
                   <input
-                    onClick={handleDelete}
                     type="button"
                     className="m-2 btn btn-danger"
                     value="Delete"
+                    onClick={handleDelete}
                   />
                 </span>
               </section>

@@ -20,10 +20,10 @@ const EditMovieForm = (props) => {
     axios
       .get(`http://localhost:5000/api/movies/${id}`)
       .then((res) => {
+        console.log(res);
         setMovie(res.data);
-        console.log(id);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log({ err }));
   }, []);
 
   const handleChange = (e) => {
@@ -38,8 +38,8 @@ const EditMovieForm = (props) => {
     axios
       .put(`http://localhost:5000/api/movies/${id}`, movie)
       .then((res) => {
-        props.setMovie(res.data);
-        push(`/`);
+        props.setMovies(res.data);
+        push(`/movies`);
       })
       .catch((err) => console.log(err));
   };

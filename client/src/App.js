@@ -15,24 +15,27 @@ import axios from 'axios';
 const App = (props) => {
   const [movies, setMovies] = useState([]);
   const [favoriteMovies, setFavoriteMovies] = useState([]);
-  const { push } = useHistory();
 
   useEffect(() => {
-    axios
-      .get('http://localhost:5000/api/movies')
-      .then((res) => {
-        setMovies(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    const getMovies = () => {
+      axios
+        .get('http://localhost:5000/api/movies')
+        .then((res) => {
+          setMovies(res.data);
+          console.log(favoriteMovies);
+        })
+        .catch((err) => console.log(err));
+    };
+    getMovies();
   }, []);
 
   const deleteMovie = (id) => {
     setMovies(movies.filter((movie) => movie.id !== id));
   };
 
-  const addToFavorites = (movie) => {};
+  const addToFavorites = (movie) => {
+    setFavoriteMovies([...favoriteMovies, movie]);
+  };
 
   return (
     <div>
@@ -47,28 +50,32 @@ const App = (props) => {
         <MovieHeader />
         <div className="row ">
           <FavoriteMovieList favoriteMovies={favoriteMovies} />
-
           <Switch>
-            <Route path="/movies/add">
-              <AddMovieForm movies={movies} setMovies={setMovies} />
-            </Route>
-
-            <Route path="/movies/edit/:id">
-              <EditMovieForm movies={movies} setMovies={setMovies} />
+            <Route exact path="/movies/edit/:id">
+              <EditMovieForm setMovies={setMovies} />
             </Route>
 
             <Route path="/movies/:id">
-              <Movie />
+              <Movie
+                deleteMovie={deleteMovie}
+                addToFavorites={addToFavorites}
+              />
+            </Route>
+            <Route path="/movies/favorites">
+              <FavoriteMovieList />
             </Route>
 
             <Route path="/movies">
               <MovieList movies={movies} />
             </Route>
 
-            <Route path="/movies">
+            <Route path="/movies/:id">
               <DeleteMovie deleteMovie={deleteMovie} />
             </Route>
 
+            <Route path="/add-movie">
+              <AddMovieForm setMovies={setMovies} />
+            </Route>
             <Route path="/">
               <Redirect to="/movies" />
             </Route>
